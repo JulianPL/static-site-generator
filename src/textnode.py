@@ -1,4 +1,5 @@
 from enum import Enum
+import re
 from htmlnode import LeafNode
 
 class TextType(Enum):
@@ -59,3 +60,45 @@ def split_nodes_delimiter(old_nodes, delimiter, text_type):
     if any(len(node_list) % 2 == 0 for node_list in translated_nodes):
         raise ValueError("Mismatched delimiter")
     return [node for node in sum(translated_nodes, []) if node.text != ""]
+
+def split_nodes_image(old_nodes):
+    return sum([split_single_node_image(node) for node in old_nodes] , [])
+
+def split_nodes_link(old_nodes):
+    return sum([split_single_node_link(node) for node in old_nodes] , [])
+
+def split_single_node_image(node):
+    def extract_markdown_images(text):
+        return re.findall(r"(!\[([^\[\]]*)\]\(([^\(\)]*)\))", text)
+    ret = []
+    image_matches = extract_markdown_images(node.text)
+    text = node.text
+    for image_match in image_matches:
+        split = text.split(image_match[0] , 1)
+        if split[0]:
+            ret.append(TextNode(split[0], TextType.NORMAL))
+        ret.append(TextNode(image_match[1], TextType.IMAGE, image_match[2]))
+        text = split[1]
+    if text:
+        ret.append(TextNode(text, TextType.NORMAL))
+    return ret
+
+def split_single_node_link(node):
+    def extract_markdown_links(text):
+        return re.findall(r"((?<!!)\[([^\[\]]*)\]\(([^\(\)]*)\))", text)
+    ret = []
+    link_matches = extract_markdown_links(node.text)
+    text = node.text
+    for link_match in link_matches:
+        split = text.split(link_match[0] , 1)
+        if split[0]:
+            ret.append(TextNode(split[0], TextType.NORMAL))
+        ret.append(TextNode(link_match[1], TextType.LINK, link_match[2]))
+        text = split[1]
+    if text:
+        ret.append(TextNode(text, TextType.NORMAL))
+    return ret
+
+
+
+
