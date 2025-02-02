@@ -46,3 +46,16 @@ def text_node_to_html_node(text_node):
             return LeafNode("img", "", {"src": text_node.url})
         case _:
             raise ValueError("Invalid TextType in TextNode")
+
+def split_nodes_delimiter(old_nodes, delimiter, text_type):
+    splitted_nodes = [node.text.split(delimiter) if node.text_type == TextType.NORMAL else [node] for node in old_nodes]
+    translated_nodes = [    [TextNode(node_text, text_type) if index % 2 == 1 else TextNode(node_text, TextType.NORMAL) 
+                            for index, node_text
+                            in enumerate(node_list)]   
+                        if type(node_list[0]) is str
+                            else node_list 
+                        for node_list 
+                        in splitted_nodes]
+    if any(len(node_list) % 2 == 0 for node_list in translated_nodes):
+        raise ValueError("Mismatched delimiter")
+    return [node for node in sum(translated_nodes, []) if node.text != ""]

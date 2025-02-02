@@ -1,6 +1,6 @@
 import unittest
 
-from textnode import TextNode, TextType, text_node_to_html_node
+from textnode import TextNode, TextType, text_node_to_html_node, split_nodes_delimiter
 from htmlnode import LeafNode
 
 class TestTextNode(unittest.TestCase):
@@ -46,7 +46,18 @@ class TestTextNodeToHtmlNode(unittest.TestCase):
         node = TextNode("image", TextType.IMAGE)
         with self.assertRaises(ValueError):
             text_node_to_html_node(node)
-        
+
+class TestSplitNodesDelimiter(unittest.TestCase):
+    def test_split_nodes_delimiter(self):
+        node_list = split_nodes_delimiter(split_nodes_delimiter([TextNode("normal **bold** normal *italic*", TextType.NORMAL)], "**", TextType.BOLD), "*", TextType.ITALIC)
+        expected = [TextNode("normal ", TextType.NORMAL), TextNode("bold", TextType.BOLD), TextNode(" normal ", TextType.NORMAL), TextNode("italic", TextType.ITALIC)]
+        self.assertEqual(node_list, expected)
+        node_list = split_nodes_delimiter([TextNode("`code`", TextType.NORMAL)], "`", TextType.CODE)
+        expected = [TextNode("code", TextType.CODE)]
+        self.assertEqual(node_list, expected)
+        node_list = [TextNode("normal *problem", TextType.NORMAL)]
+        with self.assertRaises(ValueError):
+            split_nodes_delimiter(node_list, "*", TextType.ITALIC)
 
 if __name__ == "__main__":
     unittest.main()
