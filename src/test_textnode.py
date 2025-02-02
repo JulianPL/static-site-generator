@@ -1,7 +1,7 @@
 import unittest
 
 from textnode import TextNode, TextType, text_node_to_html_node, split_nodes_delimiter
-from textnode import split_nodes_image, split_nodes_link
+from textnode import split_nodes_image, split_nodes_link, text_to_textnodes
 from htmlnode import LeafNode
 
 class TestTextNode(unittest.TestCase):
@@ -77,7 +77,22 @@ class TestLinkAndImageExtraction(unittest.TestCase):
         expected = [TextNode("This is text with a ![rick roll](https://i.imgur.com/aKaOqIh.gif) and a link ", TextType.NORMAL), TextNode("to boot dev", TextType.LINK, "https://www.boot.dev")]
         self.assertEqual(split_nodes_link([text_node]), expected)
     
-
+class TestTextToNodeText(unittest.TestCase):
+    def test_text_to_textnodes(self):
+        actual = text_to_textnodes("This is **text** with an *italic* word and a `code block` and an ![obi wan image](https://i.imgur.com/fJRm4Vk.jpeg) and a [link](https://boot.dev)")
+        expected = [
+                        TextNode("This is ", TextType.NORMAL),
+                        TextNode("text", TextType.BOLD),
+                        TextNode(" with an ", TextType.NORMAL),
+                        TextNode("italic", TextType.ITALIC),
+                        TextNode(" word and a ", TextType.NORMAL),
+                        TextNode("code block", TextType.CODE),
+                        TextNode(" and an ", TextType.NORMAL),
+                        TextNode("obi wan image", TextType.IMAGE, "https://i.imgur.com/fJRm4Vk.jpeg"),
+                        TextNode(" and a ", TextType.NORMAL),
+                        TextNode("link", TextType.LINK, "https://boot.dev"),
+                    ]
+        self.assertEqual(actual, expected)
 
 if __name__ == "__main__":
     unittest.main()
