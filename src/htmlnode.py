@@ -9,7 +9,9 @@ class HTMLNode:
         raise NotImplementedError
 
     def props_to_html(self):
-        return ' '.join(list(map(lambda key: f"{key}={self.props[key]}", self.props)))
+        if not self.props:
+            return ""
+        return ' '.join(list(map(lambda key: f'{key}="{self.props[key]}"', self.props)))
 
     def __repr__(self):
         return f"HTMLNode({self.tag}, {self.value}, {self.children}, {self.props})"
@@ -19,10 +21,12 @@ class LeafNode(HTMLNode):
         super().__init__(tag, value, None, props)
 
     def to_html(self):
-        if not self.value:
+        if self.value is None:
             raise ValueError("LeafNode without value is not allowed")
         if not self.tag:
             return self.value
+        if not self.props:
+            return f"<{self.tag}>{self.value}</{self.tag}>"
         return f"<{self.tag} {self.props_to_html()}>{self.value}</{self.tag}>"
         
     def __repr__(self):
