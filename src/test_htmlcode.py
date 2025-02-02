@@ -35,6 +35,11 @@ class TestLeafNode(unittest.TestCase):
         self.assertEqual(node.to_html(), text)
         node = LeafNode("test_tag", "test_value", {"color": "red"})
         text = "<test_tag color=red>test_value</test_tag>"
+    
+    def test_repr(self):
+        node = LeafNode("test_tag", "test_value", {"color": "red"})
+        text = "LeafNode(test_tag, test_value, {'color': 'red'})"
+        self.assertEqual(str(node), text)
 
 
 if __name__ == "__main__":
