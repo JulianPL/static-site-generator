@@ -1,6 +1,6 @@
 import unittest
 
-from htmlnode import HTMLNode, LeafNode
+from htmlnode import HTMLNode, LeafNode, ParentNode
 
 class TestHTMLNode(unittest.TestCase):
     def test_props_to_html(self):
@@ -39,6 +39,27 @@ class TestLeafNode(unittest.TestCase):
     def test_repr(self):
         node = LeafNode("test_tag", "test_value", {"color": "red"})
         text = "LeafNode(test_tag, test_value, {'color': 'red'})"
+        self.assertEqual(str(node), text)
+
+class TestParentNode(unittest.TestCase):
+    def test_to_html(self):
+        child1 = LeafNode("test_tag", "test_value", {"color": "red"})
+        child2 = LeafNode("test_tag2", "test_value2", {"color": "green"})
+        childless = ParentNode("test_tag", None, {"color": "red"})
+        with self.assertRaises(ValueError):
+            childless.to_html()
+        tagless = ParentNode(None, [child1], {"color": "red"})
+        with self.assertRaises(ValueError):
+            tagless.to_html()
+        parent = ParentNode("outer_tag", [child1, child2], {"color": "yellow"})
+        grandparent = ParentNode("outermost_tag", [parent], {"color": "black"})
+        text = "<outermost_tag color=black><outer_tag color=yellow><test_tag color=red>test_value</test_tag><test_tag2 color=green>test_value2</test_tag2></outer_tag></outermost_tag>"
+        self.assertEqual(grandparent.to_html(), text)
+        
+    
+    def test_repr(self):
+        node = ParentNode("test_tag", [HTMLNode("child_tag")], {"color": "red"})
+        text = "ParentNode(test_tag, [HTMLNode(child_tag, None, None, None)], {'color': 'red'})"
         self.assertEqual(str(node), text)
 
 
