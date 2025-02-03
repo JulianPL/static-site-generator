@@ -1,4 +1,5 @@
 from enum import Enum
+import re
 from htmlnode import ParentNode
 from textnode import text_to_textnodes, text_node_to_html_node
 
@@ -75,6 +76,13 @@ def text_to_children(text):
 def markdown_to_html(markdown):
     blocks_text = markdown_to_blocks(markdown)
     blocks_with_types = [(block_text, block_to_block_type(block_text)) for block_text in blocks_text]
-    children = [block_to_html_node(blocks_with_types[0])]
+    children = [block_to_html_node(block_with_type) for block_with_type in blocks_with_types]
     return ParentNode("div", children)
+
+def extract_title(markdown):
+    titles = re.findall(r"(?:^|\n)# ([^\n]*)(?:$|\n)", markdown)
+    if not titles:
+        raise Exception("No title found")
+    return titles[0]
+    
     

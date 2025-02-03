@@ -1,6 +1,6 @@
 import unittest
 
-from blocknode import BlockType, markdown_to_blocks, block_to_block_type, markdown_to_html
+from blocknode import BlockType, markdown_to_blocks, block_to_block_type, markdown_to_html, extract_title
 
 class TestBlockSplit(unittest.TestCase):
     def test_markdown_to_blocks(self):
@@ -52,6 +52,17 @@ class TestBlockConversion(unittest.TestCase):
         actual = str(markdown_to_html("1. 1\n2. 2"))
         expected = "ParentNode(div, [ParentNode(ol, [ParentNode(li, [LeafNode(None, 1, None)], None), ParentNode(li, [LeafNode(None, 2, None)], None)], None)], None)"
         self.assertEqual(actual, expected)
+
+class TestHelpers(unittest.TestCase):
+    def test_extract_title(self):
+        actual = extract_title("# Hello")
+        expected = "Hello"
+        self.assertEqual(actual, expected)
+        actual = extract_title("test\n# Hello\ntest")
+        expected = "Hello"
+        self.assertEqual(actual, expected)
+        with self.assertRaises(Exception):
+            extract_title("test\n## Hello\ntest")
 
 if __name__ == "__main__":
     unittest.main()

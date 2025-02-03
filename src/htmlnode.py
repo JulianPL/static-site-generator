@@ -42,6 +42,8 @@ class ParentNode(HTMLNode):
         if not self.children:
             raise ValueError("ParentNode without children is not allowed")
         content = ''.join(list(map(lambda child: child.to_html(), self.children)))
+        if not self.props:
+            return f"<{self.tag}>{content}</{self.tag}>"
         return f"<{self.tag} {self.props_to_html()}>{content}</{self.tag}>"
     
     def __repr__(self):
