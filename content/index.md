@@ -1,32 +1,41 @@
-# Tolkien Fan Club
+# About me
 
-**I like Tolkien**. Read my [first post here](/majesty)
+My name is Julian Pape-Lange and I am a developer creating migration software in the insurance industry.
 
-> All that is gold does not glitter
+## Education
 
-## Reasons I like Tolkien
+* **Ph.D. in theoretical computer science (summa cum laude)** - Combinatorial Properties of Periodic Patterns in Compressed Strings - *Chemnitz University of Technology, Oct. 2018 - Jul. 2023* 
+* **Master's degree in computer science (with distinction)** - Efficient Algorithms for Low Entropy Strings - *Georg August University of Göttingen , Oct. 2015 - Sep. 2018* 
+* **Master's degree in mathematics (with distinction)** - Efficient Algorithms for Low Entropy Strings - *Georg August University of Göttingen , Oct. 2015 - Sep. 2017* 
+* **Bachelor's degree in mathematics** - Lösungsansätze diophantischer Gleichungen an den Beispielen x^p-y^q=1 und x^2-y^q=2 - *Georg August University of Göttingen , Oct. 2010 - Sep. 2015* 
 
-* You can spend years studying the legendarium and still not understand its depths
-* It can be enjoyed by children and adults alike
-* Disney *didn't ruin it*
-* It created an entirely new genre of fantasy
+## Employment
 
-## My favorite characters (in order)
+* **Software Developer** - *msg nexinsure, Jan. 2024 - present*
+* **Scientific Assistant** - *Chemnitz University of Technology, Oct. 2018 - Jul. 2023*
+* **Student Assistant** - *Georg August University of Göttingen , Oct. 2012 - Sep. 2018*
 
-1. Gandalf
-2. Bilbo
-3. Sam
-4. Glorfindel
-5. Galadriel
-6. Elrond
-7. Thorin
-8. Sauron
-9. Aragorn
+## Publications
 
-Here's what `elflang` looks like (the perfect coding language):
+* Combinatorial Properties of Periodic Patterns in Compressed Strings - [Dissertation](https://doi.org/10.51382/978-3-96100-191-0)
+* Tight Upper Bounds on Distinct Maximal (Sub-)Repetitions in Highly Compressible Strings - [Journal Article (IJFCS)](https://doi.org/10.1142/s0129054122440075)
+* Cadences in Grammar-Compressed Strings - [Conference paper (LATA 2021)](https://doi.org/10.1007/978-3-030-68195-1_26)
+* Upper Bounds on Distinct Maximal (Sub-)Repetitions in Compressed Strings - [Conference Paper (DLT 2021)](https://doi.org/10.1007/978-3-030-81508-0_26)
+* On Extensions of Maximal Repeats in Compressed Strings - [Conference Paper (CPM 2020)](https://doi.org/10.4230/lipics.cpm.2020.27)
+* Non-Rectangular Convolutions and (Sub-)Cadences with Three Elements - [Conference Paper (STACS 2020)](https://doi.org/10.4230/lipics.stacs.2020.30)
+* On Maximal Repeats in Compressed Strings - [Conference Paper (CPM 2019)](https://doi.org/10.4230/lipics.cpm.2019.18)
 
-```
-func main(){
-    fmt.Println("Hello, World!")
-}
-```
+## Skills & Achievements
+
+* **Programming Languages & Tools** - Professional: PowerShell, SQL, Python, C++; Academic: Haskell, Prolog; Personal Projects: Kotlin, Go
+* **Testing & Quality Assurance** - ISTQB Certified Tester Foundation Level
+* **Teaching Experience** - University courses in Mathematics (Algebra, Calculus, Number Theory, Discrete Math), Computer Science (Programming Fundamentals, Theory, Algorithms), Security (Data Security, Cryptography), and Programming Languages (Haskell, Prolog)
+* **Research Communication** - Presented at international conferences and collaborated on academic publications
+* **Academic Service** - Peer reviewer for research conference
+* **Competitive Programming** - Ranked #621 in Google Code Jam 2020
+
+## Voluntary Work
+
+* **Mathematical Olympiad** - Organization and correction of submissions - *2011 - present*
+* **Church Organist** - Service at local church - *2008 - 2023*
+* **Election Helper** - Vote counting and polling station supervision - *2019 - 2020*
