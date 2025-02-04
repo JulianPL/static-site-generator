@@ -9,9 +9,13 @@ TEMPLATE_FILE = "./template.html"
 
 def main():
     copy_static()
-    generate_page(CONTENT_FOLDER+"/index.md", TEMPLATE_FILE, PUBLIC_FOLDER+"/index.html")
+    generate_page_recursive(CONTENT_FOLDER, TEMPLATE_FILE, PUBLIC_FOLDER)
     
-
+def generate_page_recursive(from_path_folder, template_path, dest_path_folder):
+    files, _ = list_dir_recursively(from_path_folder)
+    for file in files:
+        new_file = dest_path_folder+file[len(from_path_folder):][:-len("md")]+"html"
+        generate_page(file, template_path, new_file)
 
 def generate_page(from_path, template_path, dest_path):
     print(f"Generating page from {from_path} to {dest_path} using {template_path}")

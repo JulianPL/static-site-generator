@@ -83,6 +83,6 @@ def extract_title(markdown):
     titles = re.findall(r"(?:^|\n)# ([^\n]*)(?:$|\n)", markdown)
     if not titles:
         raise Exception("No title found")
-    return titles[0]
+    return titles[0].strip()
     
     
