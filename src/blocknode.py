@@ -75,25 +75,25 @@ def markdown_to_block_nodes(markdown):
         space = re.match(r"(\s*)(\*|-) ", head)[1]
         content = ""
         while re.match(rf"{space}(\*|-|) ", head):
-            content += head + "\n"
+            content += head[len(space):] + "\n"
             head, tail, _ = split_in_two(tail, '\n')
         return [BlockNode(content.rstrip(), BlockType.UNORDERED_LIST)] + markdown_to_block_nodes(f"{head}\n{tail}")
     
     # Ordered lists start with either "s\d+. " in each line for some single line whitestring
     # Ordered lists end with first line without "s\d+. " or "s " or at the end of the file
-    if re.match(r"\s*\d+. ", head):
-        space = re.match(r"(\s*)\d+. ", head)[1]
+    if re.match(r"\s*\d+\. ", head):
+        space = re.match(r"(\s*)\d+\. ", head)[1]
         content = ""
-        while re.match(rf"{space}(\d+.|) ", head):
-            content += head + "\n"
+        while re.match(rf"{space}(\d+\.|) ", head):
+            content += head[len(space):] + "\n"
             head, tail, _ = split_in_two(tail, '\n')
         return [BlockNode(content.rstrip(), BlockType.ORDERED_LIST)] + markdown_to_block_nodes(f"{head}\n{tail}")
     
     # Paragraphs are the default case
-    # A paragraph ends with an empty line
-    markdown_split = re.split(r"\n\s*\n", markdown, 1)
+    # A paragraph ends with an empty line or the start of a non-paragraph-block
+    markdown_split = re.split(r"\n(\s*(?:#{1,6} |```|> |\* |- |\d+\. |\n))", markdown, 1)
     head = markdown_split[0]
-    tail = "" if len(markdown_split) == 1 else markdown_split[1]
+    tail = "" if len(markdown_split) <= 2 else markdown_split[1]+markdown_split[2]
     return [BlockNode(head.strip(), BlockType.PARAGRAPH)] + markdown_to_block_nodes(tail)
 
 def split_in_two(text, separator):
@@ -109,80 +109,55 @@ def split_in_three(text, separator):
     tail = "" if len(text_split) <= 2 else text_split[2]
     return head, middle, tail, len(text_split)
 
+def split_into_list_item_nodes(content, delimiter):
+    list_items = re.split(delimiter, content)
+    children = []
+    for list_item in list_items:
+        grand_children = list(map(lambda block_node: block_node_to_html_node(block_node), markdown_to_block_nodes(list_item)))
+        if len(grand_children) != 0:
+            child_new = ParentNode("li", grand_children)
+            children.append(child_new)
+    return children
 
-
-
-
-
-
-
-def markdown_to_html(markdown):
-    blocks_text = markdown_to_blocks(markdown)
-    blocks_with_types = [(block_text, block_to_block_type(block_text)) for block_text in blocks_text]
-    children = [block_to_html_node(block_with_type) for block_with_type in blocks_with_types]
-    return ParentNode("div", children)
-
-def markdown_to_blocks(markdown):
-    blocks = markdown.split("\n\n")
-    return [block.strip() for block in blocks if block.strip() != ""]
-    
-def block_to_block_type(block):
-    # Headings start with 1-6 times '#' and are followed by a space
-    for i in range (1, 7):
-        prefix = "#"*i+" "
-        if block.startswith(prefix):
-            return BlockType.HEADING
-    
-    # Code blocks both start as well as end with "```"
-    if block.startswith("```") and block.endswith("```"):
-        return BlockType.CODE
-        
-    lines = block.split("\n")
-    
-    # Quotes start with ">" at each line
-    if all(line.startswith(">") for line in lines):
-        return BlockType.QUOTE
-    
-    # Unordered lists start with either "* " or "- " in each line
-    if all(line.startswith("* ") or line.startswith("- ") for line in lines):
-        return BlockType.UNORDERED_LIST
-    
-    if all(line.startswith(f"{i+1}. ") for i, line in enumerate(lines)):
-        return BlockType.ORDERED_LIST
-        
-    # Paragraphs are the default case
-    return BlockType.PARAGRAPH
-
-def block_to_html_node(block_with_type):
-    match block_with_type[1]:
+def block_node_to_html_node(block_node):
+    match block_node.block_type:
+        # A paragraph does not contain inner blocks and the content is already text
         case BlockType.PARAGRAPH:
-            content = block_with_type[0]
+            content = block_node.content
             return ParentNode("p", text_to_children(content))
+        # A heading does not contain inner blocks
+        # The content is level-many '#', a space and the text
         case BlockType.HEADING:
-            level, content = block_with_type[0].split(' ', 1)
+            level, content = block_node.content.split(' ', 1)
             return ParentNode(f"h{len(level)}", text_to_children(content))
+        # A code block contains the chosen language in the first line
+        # each other line is already text
         case BlockType.CODE:
-            content = block_with_type[0][3:-3].strip()
-            return ParentNode("pre", [ParentNode("code", text_to_children(content))])
+            language, code, _ = split_in_two(block_node.content, '\n')
+            return ParentNode("pre", [ParentNode("code", text_to_children(code), {"class": f"language-{language}"})])
+        # A quote-block may contain any other blocks. The block-prefixes are already cut off.
         case BlockType.QUOTE:
-            raw_content = block_with_type[0]
-            content = '\n'.join([line[1:].strip() for line in raw_content.split("\n")])
-            return ParentNode("blockquote", text_to_children(content))
+            children = list(map(lambda block_node: block_node_to_html_node(block_node), markdown_to_block_nodes(block_node.content)))
+            return ParentNode("blockquote", children)
+        # An unordered-list-block may contain any other blocks. The block-prefixes are not yet cut off.
         case BlockType.UNORDERED_LIST:
-            raw_content = block_with_type[0]
-            content = '\n'.join([line.split(" ", 1)[1].strip() for line in raw_content.split("\n")])
-            children = [ParentNode("li", text_to_children(line)) for line in content.split("\n")]
+            children = split_into_list_item_nodes(block_node.content, r"^. |\n\* |\n- ")
             return ParentNode("ul", children)
+        # An ordered-list-block may contain any other blocks. The block-prefixes are not yet cut off.
         case BlockType.ORDERED_LIST:
-            raw_content = block_with_type[0]
-            content = '\n'.join([line.split(" ", 1)[1].strip() for line in raw_content.split("\n")])
-            children = [ParentNode("li", text_to_children(line)) for line in content.split("\n")]
+            children = split_into_list_item_nodes(block_node.content, r"^\d+\. |\n\d+\. ")
             return ParentNode("ol", children)
-    raise ValueError("Unknown BlockType")
-        
+        # The main node contain all inner blocks which are not parsed yet
+        case BlockType.MAIN:
+            children = list(map(lambda block_node: block_node_to_html_node(block_node), markdown_to_block_nodes(block_node.content)))
+            return ParentNode("div", children)
+    logger.warning(f"Unknown BlockType in {block_node} - treat as paragraph instead")
+    content = block_node.content
+    return ParentNode("p", text_to_children(content))
+
+def markdown_to_html(content):
+    return block_node_to_html_node(BlockNode(content, BlockType.MAIN)).to_html()
 
 def text_to_children(text):
     return [text_node_to_html_node(text_node) for text_node in text_to_textnodes(text)]
-
-
 

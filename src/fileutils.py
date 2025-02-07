@@ -50,7 +50,7 @@ def markdown_to_html_page(path_source, path_dest, path_template, **kwargs):
     content_template = read(path_template)
     
     title = extract_title(content_origin)
-    content = markdown_to_html(content_origin).to_html()
+    content = markdown_to_html(content_origin)
     content_file = content_template.replace("{{ Title }}", title).replace("{{ Content }}", content)
     
     write(path_dest_html, content_file)
