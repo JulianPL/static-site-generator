@@ -27,11 +27,24 @@ My name is Julian Pape-Lange and I am a developer creating migration software in
 
 ## Skills & Achievements
 
-* **Programming Languages & Tools** - Professional: PowerShell, SQL, Python, C++; Academic: Haskell, Prolog; Personal Projects: Kotlin, Go
-* **Testing & Quality Assurance** - ISTQB Certified Tester Foundation Level
-* **Teaching Experience** - University courses in Mathematics (Algebra, Calculus, Number Theory, Discrete Math), Computer Science (Programming Fundamentals, Theory, Algorithms), Security (Data Security, Cryptography), and Programming Languages (Haskell, Prolog)
-* **Research Communication** - Presented at international conferences and collaborated on academic publications
-* **Academic Service** - Peer reviewer for research conference
+### Programming & Technical
+* **Professional:** PowerShell, SQL, Python, C++
+* **Academic:** Haskell, Prolog
+* **Personal Projects:** Kotlin, Go
+* **Testing:** ISTQB Certified Tester Foundation Level
+
+### Academic Experience
+* **Teaching:**
+    * Mathematics: Algebra, Calculus, Number Theory, Discrete Math, Probability Calculus
+    * Computer Science: Theoretical Computer Science, Efficient Algorithms, Randomized Algorithms, Logic Programming
+    * Security: Data Security, Cryptography
+    * Programming Languages: Haskell, Prolog
+* **Research:**
+    * Presented at international conferences
+    * Collaborated on academic publications
+    * Peer reviewer for research conference
+
+### Competitions
 * **Competitive Programming** - Ranked #621 in Google Code Jam 2020
 
 ## Voluntary Work
